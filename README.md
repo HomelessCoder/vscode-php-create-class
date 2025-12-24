@@ -4,6 +4,22 @@
 
 # Create PHP Class for Visual Studio Code
 
+# IMPORTANT
+
+This is a fork of the original extension available at "https://marketplace.visualstudio.com/items?itemName=jaguadoromero.vscode-php-create-class". The current implementation supports multiple directories in the PSR-4 autoload configuration. For instance:
+```json
+    "autoload": {
+        "psr-4": {
+            "Yournamespace\\": [
+                "src/",
+                "src/SomeCustomFolder/"
+            ]
+        }
+    }
+```
+
+---
+
 A Visual Studio Code extension for create Class / Interface / Trait / Enum from context menu in file explorer or in opened file.
 
 The namespace is auto-resolved through `composer.json` file.
