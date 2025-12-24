@@ -57,48 +57,28 @@
       {
         "command": "phpCreateClassMultiDir.createClass",
         "category": "PHP",
-        "title": "New Class (PSR-4 Multi-dir)"
+        "title": "Class"
       },
       {
         "command": "phpCreateClassMultiDir.createInterface",
         "category": "PHP",
-        "title": "New Interface (PSR-4 Multi-dir)"
+        "title": "Interface"
       },
       {
         "command": "phpCreateClassMultiDir.createTrait",
         "category": "PHP",
-        "title": "New Trait (PSR-4 Multi-dir)"
+        "title": "Trait"
       },
       {
         "command": "phpCreateClassMultiDir.createEnum",
         "category": "PHP",
-        "title": "New Enum (PSR-4 Multi-dir)"
-      },
-      {
-        "command": "phpCreateClassMultiDir.generateClassCode",
-        "category": "PHP",
-        "title": "Generate Class code"
-      },
-      {
-        "command": "phpCreateClassMultiDir.generateInterfaceCode",
-        "category": "PHP",
-        "title": "Generate Interface code"
-      },
-      {
-        "command": "phpCreateClassMultiDir.generateTraitCode",
-        "category": "PHP",
-        "title": "Generate Trait code"
-      },
-      {
-        "command": "phpCreateClassMultiDir.generateEnumCode",
-        "category": "PHP",
-        "title": "Generate Enum code"
+        "title": "Enum"
       }
     ],
     "submenus": [
       {
         "id": "phpCreateClassMultiDir.menu",
-        "label": "New PHP file... (PSR-4 Multi-dir)"
+        "label": "New PHP..."
       }
     ],
     "menus": {
@@ -144,6 +124,11 @@
           "type": "boolean",
           "default": false,
           "markdownDescription": "Set `final` modifier when creating a class"
+        },
+        "phpCreateClassMultiDir.readonlyClass": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Set `readonly` modifier when creating a class"
         },
         "phpCreateClassMultiDir.composerFilePath": {
           "type": "string",

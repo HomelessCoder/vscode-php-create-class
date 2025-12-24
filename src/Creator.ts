@@ -86,15 +86,17 @@ export default class Creator {
             content += "\n"
         }
 
+        let modifiers = "";
+
         if (vscode.workspace.getConfiguration("phpCreateClassMultiDir").get("finalClass") && type === "class") {
-
-            content += "final" + " " + type + " " + name + "\n";
-
-        } else {
-
-            content += type + " " + name + "\n";
-
+            modifiers += "final ";
         }
+
+        if (vscode.workspace.getConfiguration("phpCreateClassMultiDir").get("readonlyClass") && type === "class") {
+            modifiers += "readonly ";
+        }
+
+        content += modifiers + type + " " + name + "\n";
 
         content += "{\n\n}\n"
 
