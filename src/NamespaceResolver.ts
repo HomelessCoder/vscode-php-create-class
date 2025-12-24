@@ -4,7 +4,7 @@ import { statSync, existsSync } from 'fs'
 
 interface PsrEntry {
     ns: string
-    path: string,
+    path: string | string[],
     type: string
 }
 
@@ -21,7 +21,7 @@ export default class NamespaceResolver {
     readonly msgCouldNotBeFound = "The composer.json file could not be found"
 
     public async resolve(folder: string): Promise<string | undefined> {
-        const {composerFolder, composerPath, composerFound} = this.findComposerFile(folder)
+        const { composerFolder, composerPath, composerFound } = this.findComposerFile(folder)
 
         if (!composerFound) {
             await vscode.window.showErrorMessage(this.msgCouldNotBeFound)
@@ -37,20 +37,23 @@ export default class NamespaceResolver {
 
         const psrEntries: PsrEntry[] = this.collectPsrEntries(composer);
         let pathMatches: PathMatches[] = []
-        
+
         for (const entry of psrEntries) {
-            const pathNoLastSlash = this.removeLastPathSeparator(entry.path)
-            entry.path = this.ensurePathEndsWithSlash(entry.path)
+            // Ensure we treat everything as an array to handle multi-dir PSR-4
+            const pathsToProcess = Array.isArray(entry.path) ? entry.path : [entry.path];
 
-            const resolvedPath = path.resolve(composerFolder, pathNoLastSlash);
+            for (const rawPath of pathsToProcess) {
+                const pathNoLastSlash = this.removeLastPathSeparator(rawPath) as string;
+                const resolvedPath = path.resolve(composerFolder, pathNoLastSlash);
 
-            if (folder.indexOf(resolvedPath) != -1) {
-                pathMatches.push({
-                    path: this.ensureEndsWithSystemSeparator(resolvedPath),
-                    prefix: this.normalizeNamespace(entry.ns),
-                    length: resolvedPath.length,
-                    priority: entry.type == 'psr-4' ? 1 : 0
-                })
+                if (folder.indexOf(resolvedPath) != -1) {
+                    pathMatches.push({
+                        path: this.ensureEndsWithSystemSeparator(resolvedPath),
+                        prefix: this.normalizeNamespace(entry.ns),
+                        length: resolvedPath.length,
+                        priority: entry.type == 'psr-4' ? 1 : 0
+                    });
+                }
             }
         }
 
@@ -73,15 +76,19 @@ export default class NamespaceResolver {
             .replace(pathMatches[0].path, pathMatches[0].prefix)
             .replace(/\//g, '\\');
 
-        return this.removeLastPathSeparator(resolved);
+        const result = this.removeLastPathSeparator(resolved);
+        return typeof result === 'string' ? result : undefined;
     }
 
-    private removeLastPathSeparator(nsPath: string): string {
-        if (nsPath.endsWith('/') || nsPath.endsWith('\\')) {
-            return nsPath.slice(0, -1)
+    private removeLastPathSeparator(nsPath: string | string[]): string | string[] {
+        if (Array.isArray(nsPath)) {
+            return nsPath.map(p => this.removeLastPathSeparator(p)) as string[];
         }
 
-        return nsPath
+        if (nsPath.endsWith('/') || nsPath.endsWith('\\')) {
+            return nsPath.slice(0, -1);
+        }
+        return nsPath;
     }
 
     private normalizeNamespace(ns: string): string {
@@ -96,8 +103,12 @@ export default class NamespaceResolver {
         return ns;
     }
 
-    private ensurePathEndsWithSlash(path: string) {
-        if (!path.endsWith('/')) {
+    private ensurePathEndsWithSlash(path: string | string[]): string | string[] {
+        if (Array.isArray(path)) {
+            return path.map(p => this.ensurePathEndsWithSlash(p)) as string[];
+        }
+
+        if (typeof path === 'string' && !path.endsWith('/')) {
             path += '/';
         }
 
@@ -124,12 +135,12 @@ export default class NamespaceResolver {
     private findComposerFile(folder: string): any {
         const workspaceFolder = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(folder))?.uri.fsPath as string;
         const composerFilePath = vscode.workspace.getConfiguration("phpCreateClass").get("composerFilePath") as string;
-        
+
         if (composerFilePath !== null && composerFilePath !== '') {
             return this.parseComposerFilePath(composerFilePath, workspaceFolder);
         }
-        
-        
+
+
         let segments = folder.split(path.sep)
         let walking = true
 
@@ -142,7 +153,7 @@ export default class NamespaceResolver {
 
                 return {
                     composerFolder: this.ensureEndsWithSystemSeparator(composerFolder),
-                    composerPath, 
+                    composerPath,
                     composerFound: true
                 }
             } catch {
@@ -154,7 +165,7 @@ export default class NamespaceResolver {
             }
         } while (walking)
 
-        return {composerFound: false}
+        return { composerFound: false }
     }
 
     private collectPsrEntries(composer: any): PsrEntry[] {
@@ -173,7 +184,7 @@ export default class NamespaceResolver {
                 }
 
                 for (let ns in composer[autoload][psr]) {
-                    let path  = composer[autoload][psr][ns];
+                    let path = composer[autoload][psr][ns];
                     path = this.ensurePathEndsWithSlash(path)
 
                     psrEntries.push({
@@ -203,7 +214,7 @@ export default class NamespaceResolver {
         const filePath = path.join(folder, 'composer.json');
 
         if (!existsSync(filePath)) {
-            return {composerFound: false};
+            return { composerFound: false };
         }
 
         return {

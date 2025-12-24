@@ -1,24 +1,30 @@
 {
-  "name": "vscode-php-create-class",
-  "displayName": "PHP Create Class",
-  "description": "A Visual Studio Code extension for create Class / Interface / Trait / Enum from context menu in file explorer",
-  "version": "1.17.3",
+  "name": "vscode-php-create-class-multi-dir",
+  "displayName": "PHP Create Class (PSR-4 Multi-dir Fix)",
+  "description": "Patched: Create Class/Interface/Trait/Enum from context menu. Fixed to support PSR-4 namespaces with multiple directory mappings. Original extension: https://marketplace.visualstudio.com/items?itemName=jaguadoromero.vscode-php-create-class",
+  "version": "1.17.4",
+  "publisher": "HomelessCoder",
   "author": {
-    "name": "Juan Aguado",
-    "url": "https://github.com/jaguadoromero"
+    "name": "Evgenii (HomelessCoder)",
+    "url": "https://github.com/HomelessCoder"
   },
+  "contributors": [
+    {
+      "name": "Juan Aguado",
+      "url": "https://github.com/jaguadoromero"
+    }
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/jaguadoromero/vscode-php-create-class"
+    "url": "https://github.com/HomelessCoder/vscode-php-create-class"
   },
-  "homepage": "https://github.com/jaguadoromero/vscode-php-create-class/blob/master/README.md",
+  "homepage": "https://github.com/HomelessCoder/vscode-php-create-class/blob/master/README.md",
   "engines": {
     "vscode": "^1.56.0"
   },
   "categories": [
     "Other"
   ],
-  "publisher": "jaguadoromero",
   "license": "MIT",
   "icon": "icon.png",
   "keywords": [
@@ -27,7 +33,8 @@
     "class",
     "interface",
     "trait",
-    "enum"
+    "enum",
+    "psr-4"
   ],
   "galleryBanner": {
     "color": "#b2b5d7",
@@ -48,97 +55,97 @@
   "contributes": {
     "commands": [
       {
-        "command": "phpCreateClass.createClass",
+        "command": "phpCreateClassMultiDir.createClass",
         "category": "PHP",
-        "title": "New Class"
+        "title": "New Class (PSR-4 Multi-dir)"
       },
       {
-        "command": "phpCreateClass.createInterface",
+        "command": "phpCreateClassMultiDir.createInterface",
         "category": "PHP",
-        "title": "New Interface"
+        "title": "New Interface (PSR-4 Multi-dir)"
       },
       {
-        "command": "phpCreateClass.createTrait",
+        "command": "phpCreateClassMultiDir.createTrait",
         "category": "PHP",
-        "title": "New Trait"
+        "title": "New Trait (PSR-4 Multi-dir)"
       },
       {
-        "command": "phpCreateClass.createEnum",
+        "command": "phpCreateClassMultiDir.createEnum",
         "category": "PHP",
-        "title": "New Enum"
+        "title": "New Enum (PSR-4 Multi-dir)"
       },
       {
-        "command": "phpCreateClass.generateClassCode",
+        "command": "phpCreateClassMultiDir.generateClassCode",
         "category": "PHP",
         "title": "Generate Class code"
       },
       {
-        "command": "phpCreateClass.generateInterfaceCode",
+        "command": "phpCreateClassMultiDir.generateInterfaceCode",
         "category": "PHP",
         "title": "Generate Interface code"
       },
       {
-        "command": "phpCreateClass.generateTraitCode",
+        "command": "phpCreateClassMultiDir.generateTraitCode",
         "category": "PHP",
         "title": "Generate Trait code"
       },
       {
-        "command": "phpCreateClass.generateEnumCode",
+        "command": "phpCreateClassMultiDir.generateEnumCode",
         "category": "PHP",
         "title": "Generate Enum code"
       }
     ],
     "submenus": [
       {
-        "id": "phpCreateClass.menu",
-        "label": "New PHP file..."
+        "id": "phpCreateClassMultiDir.menu",
+        "label": "New PHP file... (PSR-4 Multi-dir)"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "submenu": "phpCreateClass.menu",
+          "submenu": "phpCreateClassMultiDir.menu",
           "group": "navigation@-1"
         }
       ],
-      "phpCreateClass.menu": [
+      "phpCreateClassMultiDir.menu": [
         {
-          "command": "phpCreateClass.createClass",
-          "when": "explorerResourceIsFolder && phpCreateClass.activated",
-          "group": "phpCreateClass"
+          "command": "phpCreateClassMultiDir.createClass",
+          "when": "explorerResourceIsFolder && phpCreateClassMultiDir.activated",
+          "group": "phpCreateClassMultiDir"
         },
         {
-          "command": "phpCreateClass.createInterface",
-          "when": "explorerResourceIsFolder && phpCreateClass.activated",
-          "group": "phpCreateClass"
+          "command": "phpCreateClassMultiDir.createInterface",
+          "when": "explorerResourceIsFolder && phpCreateClassMultiDir.activated",
+          "group": "phpCreateClassMultiDir"
         },
         {
-          "command": "phpCreateClass.createTrait",
-          "when": "explorerResourceIsFolder && phpCreateClass.activated",
-          "group": "phpCreateClass"
+          "command": "phpCreateClassMultiDir.createTrait",
+          "when": "explorerResourceIsFolder && phpCreateClassMultiDir.activated",
+          "group": "phpCreateClassMultiDir"
         },
         {
-          "command": "phpCreateClass.createEnum",
-          "when": "explorerResourceIsFolder && phpCreateClass.activated",
-          "group": "phpCreateClass"
+          "command": "phpCreateClassMultiDir.createEnum",
+          "when": "explorerResourceIsFolder && phpCreateClassMultiDir.activated",
+          "group": "phpCreateClassMultiDir"
         }
       ]
     },
     "configuration": {
       "type": "object",
-      "title": "PHP Create Class",
+      "title": "PHP Create Class (PSR-4 Multi-dir Fix)",
       "properties": {
-        "phpCreateClass.strictTypes": {
+        "phpCreateClassMultiDir.strictTypes": {
           "type": "boolean",
           "default": false,
           "markdownDescription": "Set `strict_types` directive when creating a file"
         },
-        "phpCreateClass.finalClass": {
+        "phpCreateClassMultiDir.finalClass": {
           "type": "boolean",
           "default": false,
           "markdownDescription": "Set `final` modifier when creating a class"
         },
-        "phpCreateClass.composerFilePath": {
+        "phpCreateClassMultiDir.composerFilePath": {
           "type": "string",
           "default": null,
           "markdownDescription": "Set `composer.json` location path (relative to project root folder)"
