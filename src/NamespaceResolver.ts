@@ -134,7 +134,7 @@ export default class NamespaceResolver {
 
     private findComposerFile(folder: string): any {
         const workspaceFolder = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(folder))?.uri.fsPath as string;
-        const composerFilePath = vscode.workspace.getConfiguration("phpCreateClass").get("composerFilePath") as string;
+        const composerFilePath = vscode.workspace.getConfiguration("phpCreateClassMultiDir").get("composerFilePath") as string;
 
         if (composerFilePath !== null && composerFilePath !== '') {
             return this.parseComposerFilePath(composerFilePath, workspaceFolder);

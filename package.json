@@ -2,7 +2,7 @@
   "name": "vscode-php-create-class-multi-dir",
   "displayName": "PHP Create Class (PSR-4 Multi-dir Fix)",
   "description": "Patched: Create Class/Interface/Trait/Enum from context menu. Fixed to support PSR-4 namespaces with multiple directory mappings. Original extension: https://marketplace.visualstudio.com/items?itemName=jaguadoromero.vscode-php-create-class",
-  "version": "1.17.5",
+  "version": "1.17.6",
   "publisher": "HomelessCoder",
   "author": {
     "name": "Evgenii (HomelessCoder)",

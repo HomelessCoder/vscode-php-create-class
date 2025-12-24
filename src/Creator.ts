@@ -35,20 +35,20 @@ export default class Creator {
         let namespace = await namespaceResolver.resolve(folder.fsPath)
 
         let filename = name.endsWith('.php') ? name : name + '.php'
-        
+
         let spaceIndex: number = filename.indexOf(' ')
         if (spaceIndex > 0) {
             filename = filename.substring(0, spaceIndex) + '.php'
         }
-        
+
         let fullFilename = folder.fsPath + path.sep + filename
 
         this.writeFile(type, name, fullFilename, namespace)
     }
 
     public async generateCode(type: string) {
-        const currentFile  = vscode.window.activeTextEditor?.document.fileName
-        
+        const currentFile = vscode.window.activeTextEditor?.document.fileName
+
         if (!currentFile) {
             vscode.window.showErrorMessage(this.msgMustOpenFile)
             return
@@ -60,21 +60,21 @@ export default class Creator {
         if (namespace === undefined) {
             return
         }
-        
+
         this.writeFile(type, path.basename(currentFile), currentFile, namespace, true)
     }
 
-    private writeFile(type: string, name: string, filename: string, namespace: string|undefined, overwrite: boolean = false): void {
+    private writeFile(type: string, name: string, filename: string, namespace: string | undefined, overwrite: boolean = false): void {
         if (fs.existsSync(filename) && !overwrite) {
             vscode.window.showErrorMessage(this.msgFileExists)
             return
         }
-    
+
         name = name.replace(/\.php+$/g, "")
-        
+
         let content = "<?php\n"
 
-        if(vscode.workspace.getConfiguration("phpCreateClass").get("strictTypes")) {
+        if (vscode.workspace.getConfiguration("phpCreateClassMultiDir").get("strictTypes")) {
             content += "\n"
             content += "declare(strict_types=1);\n"
         }
@@ -85,17 +85,17 @@ export default class Creator {
             content += "namespace " + namespace + ";\n"
             content += "\n"
         }
-		
-		if(vscode.workspace.getConfiguration("phpCreateClass").get("finalClass") && type === "class") {
+
+        if (vscode.workspace.getConfiguration("phpCreateClassMultiDir").get("finalClass") && type === "class") {
 
             content += "final" + " " + type + " " + name + "\n";
 
-        }else{
+        } else {
 
             content += type + " " + name + "\n";
 
         }
-		
+
         content += "{\n\n}\n"
 
         fs.writeFileSync(filename, content)
